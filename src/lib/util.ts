@@ -51,3 +51,7 @@ export function div(a: Vec, b: Vec | number): Vec {
     z: a.z / (typeof b === "number" ? b : b.z),
   };
 }
+
+export function dot(a: Vec, b: Vec): number {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}

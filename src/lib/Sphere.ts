@@ -15,7 +15,7 @@ export class Sphere implements RTObject {
     }
 
     // 편의상 ray와 sphere의 위치에서 sphere의 위치를 빼서 sphere를 원점으로 만듦
-    ray.origin = sub(ray.origin, this.position);
+    const origin = sub(ray.origin, this.position);
 
     /*
       이제 sphere를 x^2 + y^2 + z^2 - r^2 = 0으로 나타낼 수 있음
@@ -42,11 +42,10 @@ export class Sphere implements RTObject {
     const a = sq(ray.direction.x) + sq(ray.direction.y) + sq(ray.direction.z);
     const b =
       2 *
-      (ray.origin.x * ray.direction.x +
-        ray.origin.y * ray.direction.y +
-        ray.origin.z * ray.direction.z);
-    const c =
-      sq(ray.origin.x) + sq(ray.origin.y) + sq(ray.origin.z) - sq(this.radius);
+      (origin.x * ray.direction.x +
+        origin.y * ray.direction.y +
+        origin.z * ray.direction.z);
+    const c = sq(origin.x) + sq(origin.y) + sq(origin.z) - sq(this.radius);
     const discriminant = sq(b) - 4 * a * c;
 
     if (discriminant < 0) {
@@ -65,9 +64,9 @@ export class Sphere implements RTObject {
     }
 
     // t를 통해 x^2 + y^2 + z^2 - r^2 = 0애서의 x, y, z를 구할 수 있음
-    const x = ray.origin.x + ray.direction.x * t;
-    const y = ray.origin.y + ray.direction.y * t;
-    const z = ray.origin.z + ray.direction.z * t;
+    const x = origin.x + ray.direction.x * t;
+    const y = origin.y + ray.direction.y * t;
+    const z = origin.z + ray.direction.z * t;
 
     // x^2 + y^2 + z^2 - r^2를 각각 x, y, z에 대해 편미분하면 법선 벡터가 나옴
     const normalX = 2 * x; // f(x) = x^2 + y^2 + z^2, f'(x) = 2x

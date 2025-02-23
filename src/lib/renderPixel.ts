@@ -1,8 +1,8 @@
 import { Pixel } from "../common/types";
 import { Context } from "./Context";
 import { scene } from "./scene";
-import { Ray } from "./types";
-import { c, normalize, v } from "./util";
+import { Color, Ray } from "./types";
+import { add, c, dot, len, mul, normalize, sub, v } from "./util";
 
 export function renderPixel(context: Context, x: number, y: number): Pixel {
   const ray: Ray = {
@@ -18,11 +18,41 @@ export function renderPixel(context: Context, x: number, y: number): Pixel {
     const intersection = object.intersect(ray);
     if (intersection && intersection.distance < distance) {
       distance = intersection.distance;
-      color = {
-        r: (intersection.normal.x + 1) / 2,
-        g: (intersection.normal.y + 1) / 2,
-        b: (intersection.normal.z + 1) / 2,
+      let sum: Color = {
+        r: scene.ambientLight.r * object.color.r,
+        g: scene.ambientLight.g * object.color.g,
+        b: scene.ambientLight.b * object.color.b,
       };
+      const point = add(
+        add(ray.origin, mul(ray.direction, intersection.distance)),
+        mul(intersection.normal, 0.0001)
+      );
+      for (const light of scene.lights) {
+        const pointToLight = sub(light.position, point);
+        const ray: Ray = { origin: point, direction: normalize(pointToLight) };
+        let distance = Infinity;
+        for (const object of scene.objects) {
+          const intersection = object.intersect(ray);
+          if (intersection && intersection.distance < distance) {
+            distance = intersection.distance;
+            if (distance < len(pointToLight)) {
+              break;
+            }
+          }
+        }
+        if (distance > len(pointToLight)) {
+          const factor = Math.max(
+            0,
+            dot(intersection.normal, normalize(pointToLight))
+          );
+          sum = {
+            r: sum.r + light.color.r * object.color.r * factor,
+            g: sum.g + light.color.g * object.color.g * factor,
+            b: sum.b + light.color.b * object.color.b * factor,
+          };
+        }
+      }
+      color = sum;
     }
   }
 

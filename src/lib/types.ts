@@ -33,5 +33,5 @@ export interface Color {
 
 export interface PointLight {
   position: Vec;
-  color: number;
+  color: Color;
 }
