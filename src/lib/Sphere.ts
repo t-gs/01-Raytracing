@@ -37,7 +37,7 @@ export class Sphere implements RTObject {
       여기서의 A와 B, C를 각각 구하면 다음과 같다
       A = u^2 + v^2 + w^2
       B = 2au + 2bv + 2cw
-      C = a^2 + b^2 + c^2
+      C = a^2 + b^2 + c^2 - r^2
     */
     const a = sq(ray.direction.x) + sq(ray.direction.y) + sq(ray.direction.z);
     const b =
