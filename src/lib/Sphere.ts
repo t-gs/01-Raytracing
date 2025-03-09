@@ -52,15 +52,15 @@ export class Sphere implements RTObject {
       // 실수 x가 존재하지 않으면 교점이 없는 것, 즉 충돌하지 않음
       return undefined;
     }
-    // 교점이 ± 때문에 두 개가 나오는데, ±가 +이면 뒷면이므로 여기서 ±는 아마도 -
-    let t = (-b - Math.sqrt(discriminant)) / (2 * a);
+    // t 후보 두 개
+    const t1 = (-b - Math.sqrt(discriminant)) / (2 * a);
+    const t2 = (-b + Math.sqrt(discriminant)) / (2 * a);
+    const tMin = t1 < t2 ? t1 : t2;
+    const tMax = t1 > t2 ? t1 : t2;
+    // 음수인 경우 충돌 안 함
+    const t = tMin < 0 ? tMax : tMin;
     if (t < 0) {
-      // 음수인 경우 카메라 뒤쪽이므로 +로 재시도
-      t = (-b + Math.sqrt(discriminant)) / (2 * a);
-      if (t < 0) {
-        // 이래도 음수면 결국 충돌 안 한 거
-        return undefined;
-      }
+      return undefined;
     }
 
     // t를 통해 x^2 + y^2 + z^2 - r^2 = 0애서의 x, y, z를 구할 수 있음
