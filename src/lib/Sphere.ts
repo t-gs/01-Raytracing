@@ -1,12 +1,17 @@
+import { DummyTexture, Texture } from "./Texture";
 import { Color, Intersection, Ray, RTObject, Vec } from "./types";
-import { len, mul, normalize, sq, sub, v } from "./util";
+import { c, len, mul, normalize, sq, sub, v } from "./util";
 
 export class Sphere implements RTObject {
+  private readonly texture: Texture;
+
   constructor(
     public position: Vec,
     public radius: number,
-    public color: Color
-  ) {}
+    color: Color | Texture
+  ) {
+    this.texture = color instanceof Texture ? color : new DummyTexture(color);
+  }
 
   intersect(ray: Ray): Intersection | undefined {
     // 카메라가 구 안에 있는 경우
@@ -76,5 +81,22 @@ export class Sphere implements RTObject {
       distance: t,
       normal: normalize(v(normalX, normalY, normalZ)),
     };
+  }
+
+  color(position: Vec): Color {
+    // 편의상 sphere를 원점으로 만듦
+    const localPos = sub(position, this.position);
+    // 좌표 계산을 위해 정규화
+    const dir = normalize(localPos);
+
+    // 좌표 계산
+    const theta = Math.atan2(dir.x, dir.y); // 경도: [-π, π]
+    const phi = Math.acos(dir.z); // 위도: [0, π]
+
+    // [0, 1] 범위로 계산
+    const u = (theta + Math.PI) / (2 * Math.PI); // Map from [-π, π] to [0, 1]
+    const v = phi / Math.PI; // Map from [0, π] to [0, 1]
+
+    return c(this.texture.r(u, v), this.texture.g(u, v), this.texture.b(u, v));
   }
 }

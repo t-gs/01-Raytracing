@@ -6,7 +6,7 @@ export interface Scene {
 
 export interface RTObject {
   intersect: (ray: Ray) => Intersection | undefined;
-  color: Color;
+  color: (position: Vec) => Color;
 }
 
 export interface Ray {

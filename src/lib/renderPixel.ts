@@ -33,10 +33,13 @@ export function renderPixel(context: Context, x: number, y: number): Pixel {
     return c(0, 0, 0);
   }
   const [intersection, object] = hit;
+  const color = object.color(
+    add(ray.origin, mul(ray.direction, intersection.distance))
+  );
   let sum: Color = {
-    r: scene.ambientLight.r * object.color.r,
-    g: scene.ambientLight.g * object.color.g,
-    b: scene.ambientLight.b * object.color.b,
+    r: scene.ambientLight.r * color.r,
+    g: scene.ambientLight.g * color.g,
+    b: scene.ambientLight.b * color.b,
   };
   const point = add(
     add(ray.origin, mul(ray.direction, intersection.distance)),
@@ -52,9 +55,9 @@ export function renderPixel(context: Context, x: number, y: number): Pixel {
         dot(intersection.normal, normalize(pointToLight))
       );
       sum = {
-        r: sum.r + light.color.r * object.color.r * factor,
-        g: sum.g + light.color.g * object.color.g * factor,
-        b: sum.b + light.color.b * object.color.b * factor,
+        r: sum.r + light.color.r * color.r * factor,
+        g: sum.g + light.color.g * color.g * factor,
+        b: sum.b + light.color.b * color.b * factor,
       };
     }
   }
