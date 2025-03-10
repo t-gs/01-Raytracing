@@ -55,8 +55,7 @@ export class Sphere implements RTObject {
     // t 후보 두 개
     const t1 = (-b - Math.sqrt(discriminant)) / (2 * a);
     const t2 = (-b + Math.sqrt(discriminant)) / (2 * a);
-    const tMin = t1 < t2 ? t1 : t2;
-    const tMax = t1 > t2 ? t1 : t2;
+    const [tMin, tMax] = t1 < t2 ? [t1, t2] : [t2, t1];
     // 음수인 경우 충돌 안 함
     const t = tMin < 0 ? tMax : tMin;
     if (t < 0) {
