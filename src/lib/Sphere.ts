@@ -94,8 +94,8 @@ export class Sphere implements RTObject {
     const phi = Math.acos(dir.z); // 위도: [0, π]
 
     // [0, 1] 범위로 계산
-    const u = (theta + Math.PI) / (2 * Math.PI); // Map from [-π, π] to [0, 1]
-    const v = phi / Math.PI; // Map from [0, π] to [0, 1]
+    const u = (theta + Math.PI) / (2 * Math.PI); // [-π, π]에서 [0, 1]로
+    const v = phi / Math.PI; // [0, π]에서 [0, 1]로
 
     return c(this.texture.r(u, v), this.texture.g(u, v), this.texture.b(u, v));
   }
